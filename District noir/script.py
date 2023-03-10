@@ -98,31 +98,162 @@ def prendre_dernieres_cartes(joueuse):
     return jeu[joueuse]
 print(f"Nouvelle main du joueur 2 :",prendre_dernieres_cartes(1))
 
+def trouver_type_carte(carte):
+    if carte in cartes_soutien:
+        return "Soutien"
+    elif carte in cartes_lieu:
+        return "Lieu"
+    elif carte in cartes_alliance:
+        return "Alliance"
+    elif carte in cartes_trahison:
+        return "Trahison"
+    else:
+        return None
+
 # Fonction pour calculer le score
-def calculer_score(cartes):
-    soutiens = []
-    lieux = []
-    alliances = []
-    trahisons = []
-    for carte in cartes:
-        if 5 <= carte.valeur <= 8:
-            soutiens.append(carte)
-        elif carte.type == "Lieu":
-            lieux.append(carte)
-        elif carte.type == "Alliance":
-            alliances.append(carte.valeur)
-        elif carte.type == "Trahison":
-            trahisons.append(carte.valeur)
-    soutiens = sorted(soutiens, reverse=True)
-    score = sum([carte.valeur for carte in soutiens])
-    for i in range(len(soutiens) - 1):
-        if soutiens[i].valeur == soutiens[i+1].valeur:
-            score += 0
-    if len(set([carte.valeur for carte in soutiens])) == 4:
+def calculer_score(main_joueur):
+    score = 0
+    cartes_soutien_joueur = []
+    for carte in main_joueur:
+        type_carte = trouver_type_carte(carte)
+        if type_carte == "Soutien":
+            score += carte
+            cartes_soutien_joueur.append(carte)
+        elif type_carte == "Alliance":
+            score += carte.count("+")
+        elif type_carte == "Trahison":
+            score -= carte.count("-")
+    nb_cartes_soutien_differentes = len(set(cartes_soutien_joueur))
+    if nb_cartes_soutien_differentes == 4:
         score += 5
-    elif len(set([carte.valeur for carte in soutiens])) == 2 and soutiens[0].valeur == soutiens[1].valeur and soutiens[2].valeur == soutiens[3].valeur:
+    elif nb_cartes_soutien_differentes == 8:
         score += 10
-    score += sum(alliances) - sum(trahisons)
     return score
 joueur_1_score = calculer_score(jeu[0])
 print("Le score de la première joueuse est : ", joueur_1_score)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# def jouer_partie():
+#     # Initialisation des variables
+#     tas = []
+#     jeton_camp = random.choice(["pile", "face"])
+#     score_joueur1 = 0
+#     score_joueur2 = 0
+#     joueur1_a_les_lieux = False
+#     joueur2_a_les_lieux = False
+    
+#     # Déroulement des 4 manches
+#     for manche in range(1, 5):
+#         print(f"\n==== Manche {manche} ====")
+        
+#         # Mélange du paquet et distribution des cartes
+#         paquet = ["SOUTIEN_" + str(i) for i in range(5, 9)] * 6 + \
+#                  ["ALLIANCE"] * 7 + \
+#                  ["TRAHISON"] * 9 + \
+#                  ["VILLE"] * 3
+#         random.shuffle(paquet)
+#         pioche = paquet[:-3]
+#         tapis = paquet[-3:]
+#         main_joueur1 = pioche[:5]
+#         main_joueur2 = pioche[5:10]
+#         pioche = pioche[10:]
+        
+#         # Tour des joueurs
+#         joueur_courant = 1 if jeton_camp == "face" else 2
+#         nb_tours_restants = 6
+#         dernieres_cartes = []
+#         while nb_tours_restants > 0:
+#             print(f"\n--- Tour {6 - nb_tours_restants + 1} ---")
+#             print(f"Tapis : {tapis}")
+#             print(f"Main Joueur 1 : {main_joueur1}")
+#             print(f"Main Joueur 2 : {main_joueur2}")
+#             print(f"Dernières cartes : {dernieres_cartes}")
+#             carte_jouee = None
+#             prendre_tas = False
+            
+#             # Demande à l'utilisateur de saisir une action valide
+#             while not carte_jouee and not prendre_tas:
+#                 action = input("Jouer une carte ou prendre le tas (j/p) : ")
+#                 if action == "j":
+#                     index_carte = input("Indiquez l'index de la carte à jouer : ")
+#                     if joueur_courant == 1:
+#                         try:
+#                             carte_jouee = main_joueur1.pop(int(index_carte))
+#                         except:
+#                             print("Indice de carte invalide.")
+#                     else:
+#                         try:
+#                             carte_jouee = main_joueur2.pop(int(index_carte))
+#                         except:
+#                             print("Indice de carte invalide.")
+#                 elif action == "p":
+#                     if len(tas) > 0:
+#                         dernieres_cartes = tas[-5:]
+#                         tas = tas[:-5] if len(tas) > 5 else []
+#                         prendre_tas = True
+#                     else:
+#                         print("Le tas est vide.")
+            
+#             # Ajout de la carte jouée ou du tas dans la liste des dernières cartes
+#             if prendre_tas:
+#                 dernieres_cartes.reverse()
+#             elif joueur_courant == 1:
+#                 dernieres_cartes.append(carte_jouee)
+#             else:
+#                 dernieres_cartes.append(carte_jouee)
+            
+#             # Passage au joueur suivant ou fin de tour
+#             if joueur_courant == 1:
+#                 joueur_courant = 2
+#             else:
+#                 nb_tours_restants -= 1
+#                 joueur_courant = 1
+        
+#         #
