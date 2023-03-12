@@ -111,27 +111,33 @@ def trouver_type_carte(carte):
         return None
 
 # Fonction pour calculer le score
-def calculer_score(main_joueur):
-    score = 0
-    cartes_soutien_joueur = []
-    for carte in main_joueur:
-        type_carte = trouver_type_carte(carte)
-        if type_carte == "Soutien":
-            score += carte
-            cartes_soutien_joueur.append(carte)
-        elif type_carte == "Alliance":
-            score += carte.count("+")
-        elif type_carte == "Trahison":
-            score -= carte.count("-")
-    nb_cartes_soutien_differentes = len(set(cartes_soutien_joueur))
-    if nb_cartes_soutien_differentes == 4:
-        score += 5
-    elif nb_cartes_soutien_differentes == 8:
-        score += 10
-    return score
-joueur_1_score = calculer_score(jeu[0])
-print("Le score de la première joueuse est : ", joueur_1_score)
-
+# Fonction pour calculer le score
+def calculer_score(hand_player1, hand_player2, cartes_type):
+    nb_cinq_player1 = 0
+    nb_cinq_player2 = 0
+    score_player1 = 0
+    score_player2 = 0
+    
+    for i in hand_player1:
+        if i in cartes_type:
+            nb_cinq_player1 += i
+            score_player1 += i
+            print(f"Score 1 : {score_player1}")
+            
+    for i in hand_player2:
+        if i in cartes_type:
+            nb_cinq_player2 += i 
+            score_player2 += i
+            print(f"Score 2 : {score_player2}")
+            
+    if nb_cinq_player1 > nb_cinq_player2:
+        score_player1 += cartes_type[3]
+    elif nb_cinq_player1 < nb_cinq_player2:
+        score_player2 += cartes_type[3]
+        
+    return (score_player1, score_player2)
+        
+print(calculer_score(hand_player1, hand_player2, cartes_type))
 
 
 
